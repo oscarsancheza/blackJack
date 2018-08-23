@@ -7,10 +7,10 @@ public class Carta {
   private static final String TIPO_DIAMANTE = "Diamante";
 
   private static final String FIGURA_JACK  = "Jack";
-  private static final String TIPO_REYNA = "Reyna";
-  private static final String TIPO_REY = "Rey";
-  private static final String TIPO_AS = "As";
-  private static final String TIPO_NUMERICA = "Numerica";
+  private static final String FIGURA_REYNA = "Reyna";
+  private static final String FIGURA_REY = "Rey";
+  private static final String FIGURA_AS = "As";
+  private static final String FIGURA_NUMERICA = "Numerica";
 
   private String color;
   private String tipo;
