@@ -1,35 +1,52 @@
 package com.tecculiacan;
 
 public class Carta {
-  private static final String TIPO_CORAZON = "Corazon";
-  private static final String TIPO_PICAS = "Picas";
-  private static final String TIPO_TREBOL = "Trebol";
-  private static final String TIPO_DIAMANTE = "Diamante";
 
-  private static final String FIGURA_JACK  = "Jack";
-  private static final String FIGURA_REYNA = "Reyna";
-  private static final String FIGURA_REY = "Rey";
-  private static final String FIGURA_AS = "As";
-  private static final String FIGURA_NUMERICA = "Numerica";
+  public static final String CARTA_AS = "As";
 
-  private String color;
+  public static final String[] tipos = {"Corazon", "Picas", "Trebol", "Diamante"};
+  public static final String[] cartas = {
+    "As", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Reyna", "Rey"
+  };
+
+  private String nombre;
   private String tipo;
   private int valor;
-  private String figura;
+  private boolean esAs;
 
-  public Carta(String color,String tipo,int valor,String figura) {
-    this.color = color;
+  public Carta(String nombre, String tipo) {
+    this.nombre = nombre;
     this.tipo = tipo;
-    this.valor = valor;
-    this.figura = figura;
+    encontrarValor(nombre);
   }
 
-  public String getColor() {
-    return color;
+  private void encontrarValor(String nombre) {
+    if (nombre.equals(CARTA_AS)) {
+      this.esAs = true;
+      this.valor = 1;
+    } else if (esNumerica(nombre)) {
+      int numero = Integer.parseInt(nombre);
+      this.valor = numero;
+    } else {
+      this.valor = 10;
+    }
   }
 
-  public void setColor(String color) {
-    this.color = color;
+  private boolean esNumerica(String numero) {
+    try {
+      Integer.parseInt(numero);
+    } catch (NumberFormatException excepcion) {
+      return false;
+    }
+    return true;
+  }
+
+  public String getNombre() {
+    return nombre;
+  }
+
+  public void setNombre(String nombre) {
+    this.nombre = nombre;
   }
 
   public String getTipo() {
@@ -48,11 +65,11 @@ public class Carta {
     this.valor = valor;
   }
 
-  public String getFigura() {
-    return figura;
+  public boolean isEsAs() {
+    return esAs;
   }
 
-  public void setFigura(String figura) {
-    this.figura = figura;
+  public void setEsAs(boolean esAs) {
+    this.esAs = esAs;
   }
 }
