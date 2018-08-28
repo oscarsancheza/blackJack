@@ -6,14 +6,15 @@ import java.util.List;
 
 public class Juego {
 
-  private final Double montoDinero = 100.0;
+  private final Double DINERO_INICIAL = 100.0;
 
   private List<Jugador> jugadores;
-  private Coupier coupier;
+  private Croupier croupier;
   private int numeroJugadores;
-  private Baraja baraja;
 
-  public Juego() {}
+  public Juego(Croupier croupier) {
+    this.croupier = croupier;
+  }
 
   public void ingresarJugadores() {
 
@@ -24,10 +25,30 @@ public class Juego {
           JOptionPane.showInputDialog(
               null, "ingrese su nombre:", "Información Jugadores", JOptionPane.QUESTION_MESSAGE);
 
-      jugador = new Jugador();
-      jugador.setNombre(nombre);
+      if (nombre != null && !nombre.isEmpty()) {
+        jugador = new Persona();
+        jugador.setDinero(DINERO_INICIAL);
+        jugador.setNombre(nombre);
+        jugador.apostar();
+        jugadores.add(jugador);
+      }
+    }
 
-      jugadores.add(jugador);
+    croupier.setNombre(Croupier.NOMBRE);
+    jugadores.add(croupier);
+  }
+
+  public void entregarCartasJugadores() {
+    if (jugadores != null && jugadores.size() > 1) {
+
+      List<Carta> cartas;
+
+      for (Jugador jugador : jugadores) {
+        cartas = new ArrayList<>();
+        cartas.add(croupier.entregarCarta());
+        cartas.add(croupier.entregarCarta());
+        jugador.setCartas(cartas);
+      }
     }
   }
 
@@ -52,10 +73,6 @@ public class Juego {
     this.numeroJugadores = Integer.parseInt(resultadoSeleccionado);
   }
 
-  public Double getMontoDinero() {
-    return montoDinero;
-  }
-
   public List<Jugador> getJugadores() {
     return jugadores;
   }
@@ -64,12 +81,12 @@ public class Juego {
     this.jugadores = jugadores;
   }
 
-  public Coupier getCoupier() {
-    return coupier;
+  public Croupier getCroupier() {
+    return croupier;
   }
 
-  public void setCoupier(Coupier coupier) {
-    this.coupier = coupier;
+  public void setCroupier(Croupier croupier) {
+    this.croupier = croupier;
   }
 
   public int getNumeroJugadores() {
@@ -79,13 +96,4 @@ public class Juego {
   public void setNumeroJugadores(int numeroJugadores) {
     this.numeroJugadores = numeroJugadores;
   }
-
-  public Baraja getBaraja() {
-    return baraja;
-  }
-
-  public void setBaraja(Baraja baraja) {
-    this.baraja = baraja;
-  }
 }
-

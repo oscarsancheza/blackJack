@@ -4,17 +4,15 @@ public class Main {
 
   public static void main(String[] args) {
 
-    Juego juego = new Juego();
+    Juego juego = new Juego(new Croupier(new Baraja()));
 
     juego.ingresarNumeroJugadores();
     juego.ingresarJugadores();
+    juego.getCroupier().barajarCartas();
+    juego.entregarCartasJugadores();
 
-    Baraja baraja = new Baraja();
-    juego.setBaraja(baraja);
 
-    juego.getBaraja().construirBaraja();
 
-    juego.getBaraja().barajarCartas();
 
     System.exit(0);
   }

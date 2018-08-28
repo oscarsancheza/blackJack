@@ -24,21 +24,12 @@ public class Carta {
     if (nombre.equals(CARTA_AS)) {
       this.esAs = true;
       this.valor = 1;
-    } else if (esNumerica(nombre)) {
+    } else if (Utils.esNumerico(nombre)) {
       int numero = Integer.parseInt(nombre);
       this.valor = numero;
     } else {
       this.valor = 10;
     }
-  }
-
-  private boolean esNumerica(String numero) {
-    try {
-      Integer.parseInt(numero);
-    } catch (NumberFormatException excepcion) {
-      return false;
-    }
-    return true;
   }
 
   public String getNombre() {
