@@ -23,7 +23,7 @@ public class Carta {
   private void encontrarValor(String nombre) {
     if (nombre.equals(CARTA_AS)) {
       this.esAs = true;
-      this.valor = 11;
+      this.valor = 1;
     } else if (Utils.esNumerico(nombre)) {
       int numero = Integer.parseInt(nombre);
       this.valor = numero;

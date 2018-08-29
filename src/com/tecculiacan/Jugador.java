@@ -5,7 +5,7 @@ import java.util.List;
 
 public abstract class Jugador {
 
-  public static final int MAX_JUGADORES = 2;
+  public static final int MAX_JUGADORES = 3;
 
   protected String nombre;
   private Double apuesta;
@@ -41,10 +41,10 @@ public abstract class Jugador {
     String mensaje = this.obtenerDatosgenerales();
 
     if (this.puntos > 21) {
-      mensaje += "\nEl total de los puntos se paso de 21";
+      mensaje += "\nEl total de los puntos se paso de 21, la jugada finalizo";
       JOptionPane.showMessageDialog(null, mensaje, "blackjack", JOptionPane.INFORMATION_MESSAGE);
     } else if (this.puntos == 21) {
-      JOptionPane.showMessageDialog(null, mensaje, "blackjack", JOptionPane.INFORMATION_MESSAGE);
+      JOptionPane.showMessageDialog(null, mensaje + "\nla jugada finalizo", "blackjack", JOptionPane.INFORMATION_MESSAGE);
     } else {
       String[] respuesta = {"Si", "No"};
       String resultadoSeleccionado =
@@ -61,10 +61,11 @@ public abstract class Jugador {
       if (resultadoSeleccionado != null) {
         if (resultadoSeleccionado.equals("Si")) {
           this.cartas.add(croupier.entregarCarta());
+          validarAs();
           this.puntos = sumarPuntos();
           pedirCarta(croupier);
         } else if (resultadoSeleccionado.equals("No")) {
-          mensaje += "\nLa jugada ha terminado";
+          mensaje += "\nLa jugada termino";
           JOptionPane.showMessageDialog(
               null, mensaje, "blackjack", JOptionPane.INFORMATION_MESSAGE);
         }
@@ -74,18 +75,32 @@ public abstract class Jugador {
     }
   }
 
-  public boolean validarBlackJack(List<Carta> cartas) {
-    if (cartas != null && cartas.size() > 1) {
+  public void validarAs() {
+    if (this.cartas != null && !this.cartas.isEmpty()) {
+      boolean esAs = false;
+      int total = 0;
+      for (Carta carta : cartas) {
+        if (carta.isEsAs()) {
+          esAs = true;
+        }
+        total += carta.getValor();
+      }
 
-      int valorCartaUno = cartas.get(0).getValor();
-      int valorCartaDos = cartas.get(1).getValor();
-
-      if ((valorCartaUno == 10 && valorCartaDos == 11)
-          || (valorCartaUno == 11 && valorCartaDos == 10)) {
-        return true;
+      if (esAs && (total + 10) <= 21) {
+        cambiarValorAs();
       }
     }
-    return false;
+  }
+
+  private void cambiarValorAs() {
+    if (this.cartas != null && !this.cartas.isEmpty()) {
+      for (Carta carta : cartas) {
+        if (carta.isEsAs() && carta.getValor() == 1) {
+          carta.setValor(11);
+          break;
+        }
+      }
+    }
   }
 
   public String obtenerDatosgenerales() {
@@ -105,7 +120,6 @@ public abstract class Jugador {
 
   public int sumarPuntos() {
     int total = 0;
-
     if (cartas != null && !cartas.isEmpty()) {
       for (Carta carta : this.cartas) {
         total += carta.getValor();

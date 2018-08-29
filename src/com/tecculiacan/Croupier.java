@@ -1,5 +1,6 @@
 package com.tecculiacan;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -37,14 +38,13 @@ public class Croupier extends Jugador {
     return carta;
   }
 
-  public void realizarJugada() {
-    if (validarBlackJack(cartas)) {
-      puntos = 21;
-    } else {
-      puntos = sumarPuntos();
-      System.out.println(puntos);
+  public void realizarJugada(boolean jugadoresPerdieron) {
+    validarAs();
+    puntos = sumarPuntos();
+    if (!jugadoresPerdieron) {
       while (puntos < 17) {
         cartas.add(entregarCarta());
+        validarAs();
         puntos = sumarPuntos();
       }
     }

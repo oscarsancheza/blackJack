@@ -9,11 +9,12 @@ public class Juego {
   private Croupier croupier;
   private int numeroJugadores;
 
-  public Juego(Croupier croupier) {
-    this.croupier = croupier;
-  }
+  public Juego() {}
 
   public void iniciar() {
+
+    this.croupier = new Croupier(new Baraja());
+
     ingresarNumeroJugadores();
     ingresarJugadores();
     getCroupier().barajarCartas();
@@ -21,7 +22,7 @@ public class Juego {
 
     mostrarResumen();
     inicioJugadores();
-    getCroupier().realizarJugada();
+    getCroupier().realizarJugada(jugadoresPerdieron());
     mostrarGanadores();
 
     volverAJugar();
@@ -40,7 +41,7 @@ public class Juego {
                 null,
                 posiblesRespuestas,
                 "1");
-    if (resultadoSeleccionado.equals("Si")) {
+    if (resultadoSeleccionado != null && resultadoSeleccionado.equals("Si")) {
       iniciar();
     } else {
       System.exit(1);
@@ -48,9 +49,9 @@ public class Juego {
   }
 
   public void ingresarJugadores() {
-
     jugadores = new ArrayList<>();
     Jugador jugador;
+
     for (int x = 0; x < numeroJugadores; x++) {
       String nombre =
           JOptionPane.showInputDialog(
@@ -63,6 +64,10 @@ public class Juego {
         jugador = new Persona();
         jugador.setNombre(nombre);
         jugadores.add(jugador);
+      } else {
+        JOptionPane.showMessageDialog(
+            null, "ingresar un nombre correcto", "Blackjack", JOptionPane.INFORMATION_MESSAGE);
+        ingresarJugadores();
       }
     }
 
@@ -115,6 +120,7 @@ public class Juego {
 
       String resumen = "";
       for (Jugador jugador : this.jugadores) {
+        jugador.validarAs();
         jugador.setPuntos(jugador.sumarPuntos());
         resumen += jugador.obtenerDatosgenerales() + "\n\n";
       }
@@ -126,10 +132,24 @@ public class Juego {
     }
   }
 
+  public boolean jugadoresPerdieron() {
+    if (jugadores != null && !jugadores.isEmpty()) {
+      int totalPerdieron = 0;
+      for (Jugador jugador : jugadores) {
+        if (jugador.getPuntos() > 21) {
+          totalPerdieron += 1;
+        }
+      }
+      return totalPerdieron == jugadores.size();
+    }
+
+    return false;
+  }
+
   public void inicioJugadores() {
     if (this.jugadores != null && !this.jugadores.isEmpty()) {
       for (Jugador jugador : this.jugadores) {
-        if (jugador.validarBlackJack(jugador.getCartas())) {
+        if (jugador.getPuntos() == 21) {
           jugador.setPuntos(21);
           JOptionPane.showMessageDialog(
               null,
@@ -137,7 +157,7 @@ public class Juego {
               "blackjack",
               JOptionPane.INFORMATION_MESSAGE);
         } else {
-          jugador.setPuntos(jugador.sumarPuntos());
+
           jugador.pedirCarta(this.croupier);
         }
       }
