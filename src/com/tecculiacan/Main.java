@@ -5,14 +5,7 @@ public class Main {
   public static void main(String[] args) {
 
     Juego juego = new Juego(new Croupier(new Baraja()));
-
-    juego.ingresarNumeroJugadores();
-    juego.ingresarJugadores();
-    juego.getCroupier().barajarCartas();
-    juego.entregarCartasJugadores();
-
-
-
+    juego.iniciar();
 
     System.exit(0);
   }

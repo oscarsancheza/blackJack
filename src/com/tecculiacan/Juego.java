@@ -5,15 +5,46 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Juego {
-
-  private final Double DINERO_INICIAL = 100.0;
-
   private List<Jugador> jugadores;
   private Croupier croupier;
   private int numeroJugadores;
 
   public Juego(Croupier croupier) {
     this.croupier = croupier;
+  }
+
+  public void iniciar() {
+    ingresarNumeroJugadores();
+    ingresarJugadores();
+    getCroupier().barajarCartas();
+    entregarCartasJugadores();
+
+    mostrarResumen();
+    inicioJugadores();
+    getCroupier().realizarJugada();
+    mostrarGanadores();
+
+    volverAJugar();
+  }
+
+  private void volverAJugar() {
+    String[] posiblesRespuestas = {"Si", "No"};
+
+    String resultadoSeleccionado =
+        (String)
+            JOptionPane.showInputDialog(
+                new JFrame(),
+                "¿Volver a jugar?",
+                "Blackjack",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                posiblesRespuestas,
+                "1");
+    if (resultadoSeleccionado.equals("Si")) {
+      iniciar();
+    } else {
+      System.exit(1);
+    }
   }
 
   public void ingresarJugadores() {
@@ -23,32 +54,35 @@ public class Juego {
     for (int x = 0; x < numeroJugadores; x++) {
       String nombre =
           JOptionPane.showInputDialog(
-              null, "ingrese su nombre:", "Información Jugadores", JOptionPane.QUESTION_MESSAGE);
+              null,
+              "Ingrese el nombre del jugador " + (x + 1) + ":",
+              "Información jugadores",
+              JOptionPane.QUESTION_MESSAGE);
 
       if (nombre != null && !nombre.isEmpty()) {
         jugador = new Persona();
-        jugador.setDinero(DINERO_INICIAL);
         jugador.setNombre(nombre);
-        jugador.apostar();
         jugadores.add(jugador);
       }
     }
 
     croupier.setNombre(Croupier.NOMBRE);
-    jugadores.add(croupier);
   }
 
   public void entregarCartasJugadores() {
-    if (jugadores != null && jugadores.size() > 1) {
-
+    if (jugadores != null && !jugadores.isEmpty()) {
       List<Carta> cartas;
-
       for (Jugador jugador : jugadores) {
         cartas = new ArrayList<>();
         cartas.add(croupier.entregarCarta());
         cartas.add(croupier.entregarCarta());
         jugador.setCartas(cartas);
       }
+
+      cartas = new ArrayList<>();
+      cartas.add(croupier.entregarCarta());
+      cartas.add(croupier.entregarCarta());
+      croupier.setCartas(cartas);
     }
   }
 
@@ -69,8 +103,77 @@ public class Juego {
                 null,
                 numeroJugadoresParaSeleccionar,
                 "1");
+    if (resultadoSeleccionado != null) {
+      this.numeroJugadores = Integer.parseInt(resultadoSeleccionado);
+    } else {
+      System.exit(1);
+    }
+  }
 
-    this.numeroJugadores = Integer.parseInt(resultadoSeleccionado);
+  public void mostrarResumen() {
+    if (this.jugadores != null && !this.jugadores.isEmpty()) {
+
+      String resumen = "";
+      for (Jugador jugador : this.jugadores) {
+        jugador.setPuntos(jugador.sumarPuntos());
+        resumen += jugador.obtenerDatosgenerales() + "\n\n";
+      }
+
+      resumen += croupier.obtenerDatos();
+
+      JOptionPane.showMessageDialog(null, resumen, "Blackjack", JOptionPane.INFORMATION_MESSAGE);
+      System.out.println(resumen);
+    }
+  }
+
+  public void inicioJugadores() {
+    if (this.jugadores != null && !this.jugadores.isEmpty()) {
+      for (Jugador jugador : this.jugadores) {
+        if (jugador.validarBlackJack(jugador.getCartas())) {
+          jugador.setPuntos(21);
+          JOptionPane.showMessageDialog(
+              null,
+              "-- Tienes blackjack --" + "\n" + jugador.obtenerDatosgenerales(),
+              "blackjack",
+              JOptionPane.INFORMATION_MESSAGE);
+        } else {
+          jugador.setPuntos(jugador.sumarPuntos());
+          jugador.pedirCarta(this.croupier);
+        }
+      }
+    }
+  }
+
+  public void mostrarGanadores() {
+    if (jugadores != null && !jugadores.isEmpty()) {
+      StringBuilder mensaje = new StringBuilder();
+      for (Jugador jugador : jugadores) {
+        if (jugador.puntos == 21
+            || (jugador.puntos < 21 && croupier.getPuntos() > 21)
+            || (jugador.puntos < 21 && jugador.puntos >= croupier.puntos)) {
+          if (jugador.puntos == croupier.puntos) {
+            mensaje
+                .append(" -- empato con croupier --\n")
+                .append(jugador.obtenerDatosgenerales())
+                .append("\n\n");
+          } else if (jugador.puntos > croupier.puntos || croupier.getPuntos() > 21) {
+            mensaje
+                .append(" -- gano partida --\n")
+                .append(jugador.obtenerDatosgenerales())
+                .append("\n\n");
+          }
+        } else {
+          mensaje
+              .append(" -- perdio partida --\n")
+              .append(jugador.obtenerDatosgenerales())
+              .append("\n\n");
+        }
+      }
+
+      mensaje.append(croupier.obtenerDatosgenerales());
+      JOptionPane.showMessageDialog(
+          null, mensaje.toString(), "Blackjack", JOptionPane.INFORMATION_MESSAGE);
+    }
   }
 
   public List<Jugador> getJugadores() {

@@ -37,6 +37,33 @@ public class Croupier extends Jugador {
     return carta;
   }
 
+  public void realizarJugada() {
+    if (validarBlackJack(cartas)) {
+      puntos = 21;
+    } else {
+      puntos = sumarPuntos();
+      System.out.println(puntos);
+      while (puntos < 17) {
+        cartas.add(entregarCarta());
+        puntos = sumarPuntos();
+      }
+    }
+  }
+
+  public String obtenerDatos() {
+    String mensaje = nombre + "\n" + "Cartas:\n";
+    if (cartas != null && !cartas.isEmpty()) {
+      mensaje +=
+          cartas.get(0).getNombre()
+              + " "
+              + cartas.get(0).getTipo()
+              + "\npuntos:"
+              + cartas.get(0).getValor();
+    }
+
+    return mensaje;
+  }
+
   public Baraja getBaraja() {
     return baraja;
   }
