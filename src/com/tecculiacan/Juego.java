@@ -11,6 +11,11 @@ public class Juego {
 
   public Juego() {}
 
+
+  /**
+   * Método que inicia el juego blackjack, tanto el ingresaer los jugadores como las reglas del juego
+   *
+   */
   public void iniciar() {
 
     this.croupier = new Croupier(new Baraja());
@@ -28,6 +33,9 @@ public class Juego {
     volverAJugar();
   }
 
+  /**
+   *  Método que pregunta al usuario si desea volver a jugar.
+   */
   private void volverAJugar() {
     String[] posiblesRespuestas = {"Si", "No"};
 
@@ -48,6 +56,10 @@ public class Juego {
     }
   }
 
+
+  /**
+   * Método que pregunta al usuario el nombre de los jugadores
+   */
   public void ingresarJugadores() {
     jugadores = new ArrayList<>();
     Jugador jugador;
@@ -74,6 +86,9 @@ public class Juego {
     croupier.setNombre(Croupier.NOMBRE);
   }
 
+  /**
+   * Método que entrega dos cartas a cada jugador incluyendo Croupier
+   */
   public void entregarCartasJugadores() {
     if (jugadores != null && !jugadores.isEmpty()) {
       List<Carta> cartas;
@@ -91,6 +106,9 @@ public class Juego {
     }
   }
 
+  /**
+   * Método que pregunta al usuario por pantalla cuanto jugadores tendrá el juego
+   */
   public void ingresarNumeroJugadores() {
     String[] numeroJugadoresParaSeleccionar = new String[Jugador.MAX_JUGADORES];
 
@@ -115,6 +133,9 @@ public class Juego {
     }
   }
 
+  /**
+   * Método que imprime los datos de los jugadores tanto nombre como sus cartas
+   */
   public void mostrarResumen() {
     if (this.jugadores != null && !this.jugadores.isEmpty()) {
 
@@ -132,6 +153,11 @@ public class Juego {
     }
   }
 
+  /**
+   * Método que retorno si todos los jugadores se pasaron de 21 puntos
+   *
+   * @return Si todos los jugadores se pasaron de 21 puntos
+   */
   public boolean jugadoresPerdieron() {
     if (jugadores != null && !jugadores.isEmpty()) {
       int totalPerdieron = 0;
@@ -146,6 +172,10 @@ public class Juego {
     return false;
   }
 
+  /**
+   * Método que inicia la estrategia para los jugadores
+   *
+   */
   public void inicioJugadores() {
     if (this.jugadores != null && !this.jugadores.isEmpty()) {
       for (Jugador jugador : this.jugadores) {
@@ -164,6 +194,10 @@ public class Juego {
     }
   }
 
+  /**
+   * Método que recorre a todos los jugadores para imprimir quien fue el que gano al croupier
+   *
+   */
   public void mostrarGanadores() {
     if (jugadores != null && !jugadores.isEmpty()) {
       StringBuilder mensaje = new StringBuilder();

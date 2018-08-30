@@ -1,6 +1,5 @@
 package com.tecculiacan;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -15,6 +14,11 @@ public class Croupier extends Jugador {
     this.baraja = baraja;
   }
 
+
+  /**
+   *  Ordena una lista de cartas de forma aleatoria
+   *
+   */
   public void barajarCartas() {
     List<Carta> barajaAleatoria = new ArrayList<>();
     int indice;
@@ -28,6 +32,11 @@ public class Croupier extends Jugador {
     this.baraja.getCartas().addAll(barajaAleatoria);
   }
 
+  /**
+   * Método que saca una carta de la baraja
+   *
+   * @return  una carta de la baraja
+   */
   public Carta entregarCarta() {
     Carta carta = null;
 
@@ -38,6 +47,13 @@ public class Croupier extends Jugador {
     return carta;
   }
 
+  /**
+   * Método que realiza la jugada del croupier. Saca cartas mientras no sobrepase los 17 puntos
+   * y valida si los jugadores pasaron los 21 entonces no realiza nada.
+   *
+   * @param jugadoresPerdieron
+   *        Define si todos los jugadores se pasaron de 21
+   */
   public void realizarJugada(boolean jugadoresPerdieron) {
     validarAs();
     puntos = sumarPuntos();
@@ -50,6 +66,11 @@ public class Croupier extends Jugador {
     }
   }
 
+  /**
+   * Método que muestra la carta inicial del croupier
+   *
+   * @return La informacion del croupier, nomas mostrando una carta
+   */
   public String obtenerDatos() {
     String mensaje = nombre + "\n" + "Cartas:\n";
     if (cartas != null && !cartas.isEmpty()) {

@@ -37,6 +37,13 @@ public abstract class Jugador {
     }
   }
 
+  /**
+   * Método recursivo que realiza la estrategia del jugador, preguntando por pantalla si el jugador desea
+   * mas cartas, validando si el jugador se paso de 21 o por el contrario tiene un puntaje de 21
+   *
+   * @param croupier
+   *        El parametro Croupier se manda para poder repartir mas cartas al jugador
+   */
   public void pedirCarta(Croupier croupier) {
     String mensaje = this.obtenerDatosgenerales();
 
@@ -75,6 +82,10 @@ public abstract class Jugador {
     }
   }
 
+  /**
+   * funcion que valida el valor del As que es 1 por default, dependiendo de l puntaje que tiene el jugador,
+   * si su puntaje mas 10 no pasa de 21 se cambia el valor a 11.
+   */
   public void validarAs() {
     if (this.cartas != null && !this.cartas.isEmpty()) {
       boolean esAs = false;
@@ -92,6 +103,10 @@ public abstract class Jugador {
     }
   }
 
+
+  /**
+   * Método que cambia el valor del AS a 11
+   */
   private void cambiarValorAs() {
     if (this.cartas != null && !this.cartas.isEmpty()) {
       for (Carta carta : cartas) {
@@ -103,6 +118,11 @@ public abstract class Jugador {
     }
   }
 
+  /**
+   *  Método que regresa las cartas que tiene un jugador
+   *
+   * @return retorna las cartas que tiene un jugador
+   */
   public String obtenerDatosgenerales() {
     String mensaje = "Jugador " + nombre + "\n" + "Cartas:\n";
     if (cartas != null && !cartas.isEmpty()) {
@@ -118,6 +138,11 @@ public abstract class Jugador {
     return mensaje;
   }
 
+  /**
+   *  Método que obtiene el puntaje de las cartas de un jugador
+   *
+   * @return el total de puntos que tiene un jugador
+   */
   public int sumarPuntos() {
     int total = 0;
     if (cartas != null && !cartas.isEmpty()) {

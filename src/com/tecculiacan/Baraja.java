@@ -11,6 +11,9 @@ public class Baraja {
     construirBaraja();
   }
 
+  /**
+   * Metodo que crea la baraja de 52 cartas, mediante los tipos y figuras de cartas
+   */
   public void construirBaraja() {
     this.cartas = new ArrayList<>();
     Carta carta;

@@ -20,6 +20,13 @@ public class Carta {
     encontrarValor(nombre);
   }
 
+  /**
+   * asigna el valor a partir del nombre de la carta
+   *
+   * @param nombre
+   *        tipo de carta
+   *
+   */
   private void encontrarValor(String nombre) {
     if (nombre.equals(CARTA_AS)) {
       this.esAs = true;
