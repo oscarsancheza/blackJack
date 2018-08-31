@@ -5,36 +5,44 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Juego {
+
+  private final Double DINERO_INICIAL = 100.0;
+
+  private boolean volverAJugar = false;
   private List<Jugador> jugadores;
   private Croupier croupier;
   private int numeroJugadores;
 
   public Juego() {}
 
-
   /**
-   * Método que inicia el juego blackjack, tanto el ingresaer los jugadores como las reglas del juego
-   *
+   * Método que inicia el juego blackjack, tanto el ingresar los jugadores como las reglas del
+   * juego
    */
   public void iniciar() {
 
     this.croupier = new Croupier(new Baraja());
 
-    ingresarNumeroJugadores();
+    if (!volverAJugar) {
+      ingresarNumeroJugadores();
+    }
+
     ingresarJugadores();
-    getCroupier().barajarCartas();
-    entregarCartasJugadores();
+    ingresarApuestaJugadores();
 
-    mostrarResumen();
-    inicioJugadores();
-    getCroupier().realizarJugada(jugadoresPerdieron());
-    mostrarGanadores();
-
-    volverAJugar();
+    if (jugadores != null && jugadores.size() > 0) {
+      getCroupier().barajarCartas();
+      entregarCartasJugadores();
+      mostrarResumen();
+      inicioJugadores();
+      getCroupier().realizarJugada(jugadoresPerdieron());
+      mostrarGanadores();
+      volverAJugar();
+    }
   }
 
   /**
-   *  Método que pregunta al usuario si desea volver a jugar.
+   * Método que pregunta al usuario si desea volver a jugar.
    */
   private void volverAJugar() {
     String[] posiblesRespuestas = {"Si", "No"};
@@ -50,46 +58,95 @@ public class Juego {
                 posiblesRespuestas,
                 "1");
     if (resultadoSeleccionado != null && resultadoSeleccionado.equals("Si")) {
+      volverAJugar = true;
       iniciar();
     } else {
+      JOptionPane.showMessageDialog(null, "Termino el Juego...", "Blackjack", JOptionPane.PLAIN_MESSAGE);
       System.exit(1);
     }
   }
 
+  /**
+   * Método que pide la apuesta al usuario de los jugadores
+   */
+  private void ingresarApuestaJugadores() {
+    if (jugadores != null && jugadores.size() > 0) {
+
+      List<Jugador> indicesJugadores = new ArrayList<>();
+      boolean esErrror;
+
+      for (Jugador jugador : this.jugadores) {
+
+        if (volverAJugar) {
+          jugador.setApuesta(0.0);
+          jugador.setPuntos(0);
+          jugador.setCartas(new ArrayList<>());
+        }
+
+        if (jugador.getDinero() <= 0) {
+          indicesJugadores.add(jugador);
+          esErrror = false;
+        } else {
+          esErrror = jugador.apostar();
+        }
+
+        if (esErrror) {
+          indicesJugadores.add(jugador);
+        }
+      }
+      eliminarJugadores(indicesJugadores);
+    }
+  }
 
   /**
-   * Método que pregunta al usuario el nombre de los jugadores
+   * Método que elimina jugadores
+   *
+   * @param indicesJugadores indice de los jugadores que seran eliminados
    */
-  public void ingresarJugadores() {
-    jugadores = new ArrayList<>();
-    Jugador jugador;
-
-    for (int x = 0; x < numeroJugadores; x++) {
-      String nombre =
-          JOptionPane.showInputDialog(
-              null,
-              "Ingrese el nombre del jugador " + (x + 1) + ":",
-              "Información jugadores",
-              JOptionPane.QUESTION_MESSAGE);
-
-      if (nombre != null && !nombre.isEmpty()) {
-        jugador = new Persona();
-        jugador.setNombre(nombre);
-        jugadores.add(jugador);
-      } else {
-        JOptionPane.showMessageDialog(
-            null, "ingresar un nombre correcto", "Blackjack", JOptionPane.INFORMATION_MESSAGE);
-        ingresarJugadores();
+  private void eliminarJugadores(List<Jugador> indicesJugadores) {
+    if (indicesJugadores != null && !indicesJugadores.isEmpty()) {
+      for (Jugador jugador : indicesJugadores) {
+        if (jugador != null && jugadores != null && !jugadores.isEmpty()) {
+          this.jugadores.remove(jugador);
+        }
       }
     }
+  }
 
+  /** Método Recursivo que pregunta al usuario el nombre de todos los jugadores. */
+  private void ingresarJugadores() {
+    Jugador jugador;
+
+    if (!volverAJugar) {
+      jugadores = new ArrayList<>();
+
+      for (int x = 0; x < numeroJugadores; x++) {
+        String nombre =
+            JOptionPane.showInputDialog(
+                null,
+                "Ingrese el nombre del jugador " + (x + 1) + ":",
+                "Información jugadores",
+                JOptionPane.QUESTION_MESSAGE);
+
+        if (nombre != null && !nombre.isEmpty()) {
+          jugador = new Persona();
+          jugador.setNombre(nombre);
+          jugador.setDinero(DINERO_INICIAL);
+          jugadores.add(jugador);
+        } else {
+          JOptionPane.showMessageDialog(
+              null, "ingresar un nombre correcto", "Blackjack", JOptionPane.INFORMATION_MESSAGE);
+          ingresarJugadores();
+        }
+      }
+    }
     croupier.setNombre(Croupier.NOMBRE);
   }
 
   /**
    * Método que entrega dos cartas a cada jugador incluyendo Croupier
    */
-  public void entregarCartasJugadores() {
+  private void entregarCartasJugadores() {
     if (jugadores != null && !jugadores.isEmpty()) {
       List<Carta> cartas;
       for (Jugador jugador : jugadores) {
@@ -109,7 +166,7 @@ public class Juego {
   /**
    * Método que pregunta al usuario por pantalla cuanto jugadores tendrá el juego
    */
-  public void ingresarNumeroJugadores() {
+  private void ingresarNumeroJugadores() {
     String[] numeroJugadoresParaSeleccionar = new String[Jugador.MAX_JUGADORES];
 
     for (int x = 0; x < Jugador.MAX_JUGADORES; x++) {
@@ -129,6 +186,7 @@ public class Juego {
     if (resultadoSeleccionado != null) {
       this.numeroJugadores = Integer.parseInt(resultadoSeleccionado);
     } else {
+      JOptionPane.showMessageDialog(null, "Termino el Juego...", "Blackjack", JOptionPane.PLAIN_MESSAGE);
       System.exit(1);
     }
   }
@@ -136,7 +194,7 @@ public class Juego {
   /**
    * Método que imprime los datos de los jugadores tanto nombre como sus cartas
    */
-  public void mostrarResumen() {
+  private void mostrarResumen() {
     if (this.jugadores != null && !this.jugadores.isEmpty()) {
 
       String resumen = "";
@@ -158,7 +216,7 @@ public class Juego {
    *
    * @return Si todos los jugadores se pasaron de 21 puntos
    */
-  public boolean jugadoresPerdieron() {
+  private boolean jugadoresPerdieron() {
     if (jugadores != null && !jugadores.isEmpty()) {
       int totalPerdieron = 0;
       for (Jugador jugador : jugadores) {
@@ -174,9 +232,8 @@ public class Juego {
 
   /**
    * Método que inicia la estrategia para los jugadores
-   *
    */
-  public void inicioJugadores() {
+  private void inicioJugadores() {
     if (this.jugadores != null && !this.jugadores.isEmpty()) {
       for (Jugador jugador : this.jugadores) {
         if (jugador.getPuntos() == 21) {
@@ -196,9 +253,8 @@ public class Juego {
 
   /**
    * Método que recorre a todos los jugadores para imprimir quien fue el que gano al croupier
-   *
    */
-  public void mostrarGanadores() {
+  private void mostrarGanadores() {
     if (jugadores != null && !jugadores.isEmpty()) {
       StringBuilder mensaje = new StringBuilder();
       for (Jugador jugador : jugadores) {
@@ -209,17 +265,31 @@ public class Juego {
             mensaje
                 .append(" -- empato con croupier --\n")
                 .append(jugador.obtenerDatosgenerales())
+                .append("\nDinero:")
+                .append(jugador.getDinero())
+                .append("\ngano:")
+                .append(0)
                 .append("\n\n");
           } else if (jugador.puntos > croupier.puntos || croupier.getPuntos() > 21) {
+            jugador.gano();
             mensaje
                 .append(" -- gano partida --\n")
                 .append(jugador.obtenerDatosgenerales())
+                .append("\nDinero:")
+                .append(jugador.getDinero())
+                .append("\ngano:")
+                .append(jugador.getApuesta())
                 .append("\n\n");
           }
         } else {
+          jugador.perdio();
           mensaje
               .append(" -- perdio partida --\n")
               .append(jugador.obtenerDatosgenerales())
+              .append("\nDinero:")
+              .append(jugador.getDinero())
+              .append("\nPerdio:")
+              .append(jugador.getApuesta())
               .append("\n\n");
         }
       }
@@ -227,6 +297,7 @@ public class Juego {
       mensaje.append(croupier.obtenerDatosgenerales());
       JOptionPane.showMessageDialog(
           null, mensaje.toString(), "Blackjack", JOptionPane.INFORMATION_MESSAGE);
+      System.out.println(mensaje);
     }
   }
 
