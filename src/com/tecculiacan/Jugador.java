@@ -5,7 +5,8 @@ import java.util.List;
 
 public abstract class Jugador {
 
-  public static final int MAX_JUGADORES = 2;
+  public static final Double DINERO_INICIAL = 100.0;
+  public static final int MAX_JUGADORES = 3;
 
   protected String nombre;
   private Double apuesta;

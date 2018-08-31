@@ -5,10 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Juego {
-
-  private final Double DINERO_INICIAL = 100.0;
-
-  private boolean volverAJugar = false;
+  private boolean volverAJugar;
   private List<Jugador> jugadores;
   private Croupier croupier;
   private int numeroJugadores;
@@ -131,7 +128,7 @@ public class Juego {
         if (nombre != null && !nombre.isEmpty()) {
           jugador = new Persona();
           jugador.setNombre(nombre);
-          jugador.setDinero(DINERO_INICIAL);
+          jugador.setDinero(Jugador.DINERO_INICIAL);
           jugadores.add(jugador);
         } else {
           JOptionPane.showMessageDialog(
@@ -197,16 +194,16 @@ public class Juego {
   private void mostrarResumen() {
     if (this.jugadores != null && !this.jugadores.isEmpty()) {
 
-      String resumen = "";
+      StringBuilder resumen = new StringBuilder();
       for (Jugador jugador : this.jugadores) {
         jugador.validarAs();
         jugador.setPuntos(jugador.sumarPuntos());
-        resumen += jugador.obtenerDatosgenerales() + "\n\n";
+        resumen.append(jugador.obtenerDatosgenerales()).append("\n\n");
       }
 
-      resumen += croupier.obtenerDatos();
+      resumen.append(croupier.obtenerDatos());
 
-      JOptionPane.showMessageDialog(null, resumen, "Blackjack", JOptionPane.INFORMATION_MESSAGE);
+      JOptionPane.showMessageDialog(null, resumen.toString(), "Blackjack", JOptionPane.INFORMATION_MESSAGE);
       System.out.println(resumen);
     }
   }
