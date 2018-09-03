@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Jugador {
+public class Jugador {
 
   public static final Double DINERO_INICIAL = 100.0;
   public static final int MAX_JUGADORES = 3;

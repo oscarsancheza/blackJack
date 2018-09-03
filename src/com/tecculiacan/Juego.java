@@ -115,7 +115,7 @@ public class Juego {
                 JOptionPane.QUESTION_MESSAGE);
 
         if (nombre != null && !nombre.isEmpty()) {
-          jugador = new Persona();
+          jugador = new Jugador();
           jugador.setNombre(nombre);
           jugador.setDinero(Jugador.DINERO_INICIAL);
           jugadores.add(jugador);
