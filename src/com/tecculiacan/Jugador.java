@@ -8,7 +8,6 @@ public abstract class Jugador {
 
   public static final Double DINERO_INICIAL = 100.0;
   public static final int MAX_JUGADORES = 3;
-
   protected String nombre;
   private Double apuesta;
   private Double dinero;
@@ -19,12 +18,9 @@ public abstract class Jugador {
 
   /**
    * Método que pide al usuario las apuestas de los jugadores
-   *
-   * @return verdadero si ocurrio un error
    */
   public void apostar() {
     boolean aposto = false;
-
     while (!aposto) {
       String apuestaIngresada =
           JOptionPane.showInputDialog(
@@ -101,7 +97,7 @@ public abstract class Jugador {
   }
 
   /**
-   * funcion que valida el valor del As que es 1 por default, dependiendo de l puntaje que tiene el
+   * Método que valida el valor del As que es 1 por default, dependiendo de l puntaje que tiene el
    * jugador, si su puntaje mas 10 no pasa de 21 se cambia el valor a 11.
    */
   public void validarAs() {
