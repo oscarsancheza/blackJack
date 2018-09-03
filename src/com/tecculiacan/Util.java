@@ -1,6 +1,6 @@
 package com.tecculiacan;
 
-public class Utils {
+public class Util {
 
   /**
    * Método que valida si un String es un numero entero

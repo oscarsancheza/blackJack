@@ -31,7 +31,7 @@ public class Carta {
     if (nombre.equals(CARTA_AS)) {
       this.esAs = true;
       this.valor = 1;
-    } else if (Utils.esNumeroEntero(nombre)) {
+    } else if (Util.esNumeroEntero(nombre)) {
       int numero = Integer.parseInt(nombre);
       this.valor = numero;
     } else {

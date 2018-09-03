@@ -31,7 +31,7 @@ public abstract class Jugador {
 
       if (apuestaIngresada != null
           && !apuestaIngresada.isEmpty()
-          && Utils.esNumeroDecimal(apuestaIngresada)
+          && Util.esNumeroDecimal(apuestaIngresada)
           && Double.valueOf(apuestaIngresada) > 0) {
         if (Double.valueOf(apuestaIngresada) <= this.dinero) {
           this.apuesta = Double.valueOf(apuestaIngresada);
