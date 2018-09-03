@@ -4,8 +4,8 @@ public class Carta {
 
   public static final String CARTA_AS = "As";
 
-  public static final String[] tipos = {"Corazon", "Picas", "Trebol", "Diamante"};
-  public static final String[] cartas = {
+  public static final String[] TIPOS = {"Corazon", "Picas", "Trebol", "Diamante"};
+  public static final String[] CARTAS = {
     "As", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Reyna", "Rey"
   };
 
@@ -31,7 +31,7 @@ public class Carta {
     if (nombre.equals(CARTA_AS)) {
       this.esAs = true;
       this.valor = 1;
-    } else if (Utils.esNumerico(nombre)) {
+    } else if (Utils.esNumeroEntero(nombre)) {
       int numero = Integer.parseInt(nombre);
       this.valor = numero;
     } else {

@@ -18,9 +18,9 @@ public class Baraja {
     this.cartas = new ArrayList<>();
     Carta carta;
 
-    for (int a = 0; a < Carta.tipos.length; a++) {
-      for (int b = 0; b < Carta.cartas.length; b++) {
-        carta = new Carta(Carta.cartas[b], Carta.tipos[a]);
+    for (int a = 0; a < Carta.TIPOS.length; a++) {
+      for (int b = 0; b < Carta.CARTAS.length; b++) {
+        carta = new Carta(Carta.CARTAS[b], Carta.TIPOS[a]);
         this.cartas.add(carta);
       }
     }

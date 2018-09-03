@@ -1,145 +1,145 @@
 package com.tecculiacan;
 
 import javax.swing.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Jugador {
 
+  public static final Double DINERO_INICIAL = 100.0;
   public static final int MAX_JUGADORES = 3;
-
   protected String nombre;
   private Double apuesta;
   private Double dinero;
   protected List<Carta> cartas;
   protected int puntos;
-  private boolean gano;
 
   public Jugador() {}
 
+  /**
+   * Método que pide al usuario las apuestas de los jugadores
+   */
   public void apostar() {
-    String apuestaIngresada =
-        JOptionPane.showInputDialog(
-            null,
-            "Tienes disponible:" + this.dinero + "\nApostar:",
-            "Apostar",
-            JOptionPane.QUESTION_MESSAGE);
+    boolean aposto = false;
+    while (!aposto) {
+      String apuestaIngresada =
+          JOptionPane.showInputDialog(
+              null,
+              "Jugador " + nombre + "\nTienes disponible:" + this.dinero + "\nApostar:",
+              "Apostar",
+              JOptionPane.QUESTION_MESSAGE);
 
-    if (apuestaIngresada != null
-        && !apuestaIngresada.isEmpty()
-        && Utils.esNumerico(apuestaIngresada)) {
-      if (Double.valueOf(apuestaIngresada) > 0 && Double.valueOf(apuestaIngresada) <= this.dinero) {
-        this.apuesta = Double.valueOf(apuestaIngresada);
+      if (apuestaIngresada != null
+          && !apuestaIngresada.isEmpty()
+          && Utils.esNumeroDecimal(apuestaIngresada)
+          && Double.valueOf(apuestaIngresada) > 0) {
+        if (Double.valueOf(apuestaIngresada) <= this.dinero) {
+          this.apuesta = Double.valueOf(apuestaIngresada);
+          aposto = true;
+        } else {
+          JOptionPane.showMessageDialog(
+              null,
+              "No cuenta con ese dinero para apostar",
+              "BlackJack",
+              JOptionPane.INFORMATION_MESSAGE);
+        }
       } else {
-        apostar();
+        JOptionPane.showMessageDialog(
+            null, "Ingrese un cantidad valida", "Blackjack", JOptionPane.ERROR_MESSAGE);
       }
-    } else {
-      apostar();
     }
   }
 
   /**
-   * Método recursivo que realiza la estrategia del jugador, preguntando por pantalla si el jugador desea
-   * mas cartas, validando si el jugador se paso de 21 o por el contrario tiene un puntaje de 21
+   * Método que realiza la estrategia del jugador, preguntando por pantalla si el jugador desea mas
+   * cartas, validando si el jugador se paso de 21 o por el contrario tiene un puntaje de 21
    *
-   * @param croupier
-   *        El parametro Croupier se manda para poder repartir mas cartas al jugador
+   * @param croupier El parametro Croupier se manda para poder repartir mas cartas al jugador
    */
   public void pedirCarta(Croupier croupier) {
-    String mensaje = this.obtenerDatosgenerales();
+    boolean terminojugada = false;
 
-    if (this.puntos > 21) {
-      mensaje += "\nEl total de los puntos se paso de 21, la jugada finalizo";
-      JOptionPane.showMessageDialog(null, mensaje, "blackjack", JOptionPane.INFORMATION_MESSAGE);
-    } else if (this.puntos == 21) {
-      JOptionPane.showMessageDialog(null, mensaje + "\nla jugada finalizo", "blackjack", JOptionPane.INFORMATION_MESSAGE);
-    } else {
-      String[] respuesta = {"Si", "No"};
-      String resultadoSeleccionado =
-          (String)
-              JOptionPane.showInputDialog(
-                  new JFrame(),
-                  mensaje + "\nPedir una carta mas:",
-                  "BlackJack",
-                  JOptionPane.QUESTION_MESSAGE,
-                  null,
-                  respuesta,
-                  "1");
+    while (!terminojugada) {
+      String mensaje = this.obtenerDatosgenerales();
 
-      if (resultadoSeleccionado != null) {
+      if (this.puntos > 21) {
+        mensaje += "\n\nEl total de los puntos se paso de 21, la jugada termino";
+        JOptionPane.showMessageDialog(null, mensaje, "Blackjack", JOptionPane.INFORMATION_MESSAGE);
+        terminojugada = true;
+      } else if (this.puntos == 21) {
+        JOptionPane.showMessageDialog(
+            null, mensaje + "\n\nLa jugada termino", "Blackjack", JOptionPane.INFORMATION_MESSAGE);
+        terminojugada = true;
+      } else {
+        String[] respuesta = {"Si", "No"};
+        String resultadoSeleccionado =
+            (String)
+                JOptionPane.showInputDialog(
+                    new JFrame(),
+                    mensaje + "\nPedir una carta mas:",
+                    "BlackJack",
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    respuesta,
+                    "1");
         if (resultadoSeleccionado.equals("Si")) {
           this.cartas.add(croupier.entregarCarta());
           validarAs();
           this.puntos = sumarPuntos();
-          pedirCarta(croupier);
         } else if (resultadoSeleccionado.equals("No")) {
-          mensaje += "\nLa jugada termino";
+          mensaje += "\n\nLa jugada termino";
           JOptionPane.showMessageDialog(
-              null, mensaje, "blackjack", JOptionPane.INFORMATION_MESSAGE);
+              null, mensaje, "Blackjack", JOptionPane.INFORMATION_MESSAGE);
+          terminojugada = true;
         }
-      } else {
-        pedirCarta(croupier);
       }
     }
   }
 
   /**
-   * funcion que valida el valor del As que es 1 por default, dependiendo de l puntaje que tiene el jugador,
-   * si su puntaje mas 10 no pasa de 21 se cambia el valor a 11.
+   * Método que valida el valor del As que es 1 por default, dependiendo de l puntaje que tiene el
+   * jugador, si su puntaje mas 10 no pasa de 21 se cambia el valor a 11.
    */
   public void validarAs() {
     if (this.cartas != null && !this.cartas.isEmpty()) {
-      boolean esAs = false;
-      int total = 0;
+      int total = sumarPuntos();
       for (Carta carta : cartas) {
-        if (carta.isEsAs()) {
-          esAs = true;
-        }
-        total += carta.getValor();
-      }
-
-      if (esAs && (total + 10) <= 21) {
-        cambiarValorAs();
-      }
-    }
-  }
-
-
-  /**
-   * Método que cambia el valor del AS a 11
-   */
-  private void cambiarValorAs() {
-    if (this.cartas != null && !this.cartas.isEmpty()) {
-      for (Carta carta : cartas) {
-        if (carta.isEsAs() && carta.getValor() == 1) {
+        if (carta.isEsAs() && total > 21) {
+          carta.setValor(1);
+          total = sumarPuntos();
+        } else if (carta.isEsAs() && (total + 10) <= 21) {
           carta.setValor(11);
-          break;
+          total = sumarPuntos();
         }
       }
     }
   }
 
   /**
-   *  Método que regresa las cartas que tiene un jugador
+   * Método que regresa las cartas que tiene un jugador
    *
    * @return retorna las cartas que tiene un jugador
    */
   public String obtenerDatosgenerales() {
-    String mensaje = "Jugador " + nombre + "\n" + "Cartas:\n";
+    StringBuilder mensaje = new StringBuilder("Jugador " + nombre + "\n" + "Cartas:\n");
     if (cartas != null && !cartas.isEmpty()) {
       for (Carta carta : cartas) {
-        mensaje += carta.getNombre() + " " + carta.getTipo() + "\n";
+        mensaje
+            .append("- ")
+            .append(carta.getNombre())
+            .append(" ")
+            .append(carta.getTipo())
+            .append("\n");
       }
     }
 
-    if (!mensaje.isEmpty()) {
-      mensaje += "puntos:" + puntos;
-    }
+    mensaje.append("puntos:").append(puntos);
 
-    return mensaje;
+    return mensaje.toString();
   }
 
   /**
-   *  Método que obtiene el puntaje de las cartas de un jugador
+   * Método que obtiene el puntaje de las cartas de un jugador
    *
    * @return el total de puntos que tiene un jugador
    */
@@ -151,6 +151,20 @@ public abstract class Jugador {
       }
     }
     return total;
+  }
+
+  public void gano() {
+    this.dinero += this.apuesta;
+  }
+
+  public void perdio() {
+    this.dinero -= apuesta;
+  }
+
+  public void iniciarJugador() {
+    this.puntos = 0;
+    this.setCartas(new ArrayList<>());
+    this.setApuesta(0.0);
   }
 
   public String getNombre() {
@@ -191,13 +205,5 @@ public abstract class Jugador {
 
   public void setPuntos(int puntos) {
     this.puntos = puntos;
-  }
-
-  public boolean isGano() {
-    return gano;
-  }
-
-  public void setGano(boolean gano) {
-    this.gano = gano;
   }
 }
